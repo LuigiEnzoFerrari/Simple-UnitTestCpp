@@ -21,7 +21,7 @@
 
 #define TEST_SUITE_NAME_COLOR "\e[1;36m"
 #define TEST_SUITE_TEST_COLOR "\e[0m"
-#define TEST_SUITE_TEST "Test"
+#define TEST_SUITE_TEST " Test"
 
 class UnitTest {
 	public:
@@ -54,8 +54,8 @@ class UnitTest {
 		};
 };
 
-typedef void (*testlist[])(std::string, UnitTest);
-typedef std::vector<void(*)(std::string, UnitTest)> asserts;
+typedef void (*testlist[])(UnitTest);
+typedef std::vector<void(*)(UnitTest)> asserts;
 
 void testSuite(std::string name, testlist suit, size_t n) {
 	asserts v(suit, suit + n);
@@ -63,8 +63,8 @@ void testSuite(std::string name, testlist suit, size_t n) {
 	std::cout << TEST_SUITE_NAME_COLOR << name << RESET_COLOR << std::endl;
 
 	for(int i = 0; i < n; i++) {
-		std::cout << (i + 1) << "\n" << TEST_SUITE_TEST_COLOR;
-		v[i](TEST_SUITE_TEST, UnitTest());
+		std::cout << (i + 1) << TEST_SUITE_TEST_COLOR << TEST_SUITE_TEST << "\n";
+		v[i](UnitTest());
 		std::cout << RESET_COLOR;
 	};
 };
