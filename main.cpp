@@ -2,41 +2,77 @@
 #include "UnitTest.hpp"
 #include <vector>
 #include <iterator>
+#include <bits/stdc++.h>
 
-void testVecReverse(UnitTest unit) {
-	int p[4] = {3, 4, 5, 2};
-	std::vector<int> vec(p, p + 4);
+void testCopyConstructor(UnitTest unit) {
+	std::vector<int>::iterator it;
+	std::vector<int>::iterator it2(it);
 
-	std::vector<int>::reverse_iterator it = vec.rbegin();
-	unit.assertEqual(*(it + 2), *(p + 2));
+	unit.assertTrue(it == it2);
+
+	int *p = new int[5];
+	int *tmp = p;
+	for (int i = 0; i < 5; i++) { p[i] = i<<1; }
+
+	std::vector<int>::iterator it3(p);
+	std::vector<int>::iterator it4(it3);
+	unit.assertEqual(*it3, *it4);
+	unit.assertEqual(*(it3 + 3), *(it4 + 3));
+	delete[] tmp;
 }
 
-void testVecIterator(UnitTest unit = UnitTest()) {
-	int p[4] = {3, 4, 5, 2};
-	std::vector<int> vec(p, p + 4);
+void TestCompoundAssignmentOperations(UnitTest unit) {
 
-	std::vector<int>::iterator it = vec.begin();
-	unit.assertEqual(*(it + 2), *(p + 2));
+	int *p = new int[5];
+	int *tmp = p;
+	for (int i = 0; i < 5; i++) { p[i] = i<<1; }
 
-	it = vec.end();
-	unit.assertEqual(*it, p[3]);
-}
+	std::vector<int>::iterator it(p);
 
-void testVectorSize(UnitTest unit) {
-	std::vector<int> vec;
-
-	unit.assertTrue(vec.empty());
-
-	for (int i = 0; i < 2; i++) {
-		vec.push_back(i);
+	unit.assertEqual(*(p + 3), *(it + 3));
+	bool equal = true;
+	for (size_t i = 0; i < 5; i++) {
+		if (*it++ != *p++) {
+			equal = false;
+		}
 	}
-	unit.assertTrue(vec.size() == 2);
+	unit.assertTrue(equal);
 
+	unit.assertEqual(*(p - 3), *(it - 3));
+
+	for (size_t i = 0; i < 5; i++) {
+		if (*--it != *--p) {
+			equal = false;
+		}
+	}
+
+	unit.assertTrue(equal);
+	for (size_t i = 0; i < 1; i++) {
+		if (it[i] != p[i]) {
+			equal = false;
+		}
+	}
+	unit.assertTrue(equal, "nem lembro");
+
+	p += 4;
+	it += 4;
+	unit.assertEqual(*p, *it);
+
+	p -= 2;
+	it -= 2;
+	unit.assertEqual(*p, *it);
+
+	delete[] tmp;
 }
+
 
 int main( void ) {
-	testlist veciterators = {testVecIterator, testVecReverse};
-	testSuite("normal_and_reverse_iterators", veciterators, 2);
+
+	testlist suit = {testCopyConstructor, TestCompoundAssignmentOperations};
+
+	UnitTest one(" pera ", "basnan");
+
+	testSuite("normal_and_reverse_iterators", suit, one);
 	return (0);
 }
 
