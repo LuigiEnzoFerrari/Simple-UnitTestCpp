@@ -4,17 +4,26 @@
 #include <vector>
 #include <cstring>
 
-#define RESET_COLOR "\e[0m" 
+#define RESET_COLOR "\033[0m" 
 
 /*
 ** testSuite settings
 */
 
-#define TEST_SUITE_NAME_COLOR "\e[1;36m"
-#define TEST_SUITE_TEST_COLOR "\e[0m"
+#define TEST_SUITE_NAME_COLOR "\033[1;36m"
+#define TEST_SUITE_TEST_COLOR "\033[0m"
 #define TEST_SUITE_TEST " Test"
 
-class UnitTest {
+class Asserts {
+	public:
+		Asserts( void ) {};
+		virtual ~Asserts( void ) {};
+		virtual void assertFalse(bool condition) const = 0;
+		virtual void assertTrue(bool condition) const = 0;
+
+};
+
+class UnitTest: public Asserts {
 	private:
 		std::string _assert_fail;
 		std::string _assert_pass;
@@ -24,8 +33,8 @@ class UnitTest {
 	public:
 		UnitTest( std::string assert_fail = "Fail",
 			std::string assert_pass = "Pass",
-			std::string assert_color_fail = "\e[31m",
-			std::string assert_color_pass = "\e[32m"):
+			std::string assert_color_fail = "\033[31m",
+			std::string assert_color_pass = "\033[32m"):
 			_assert_fail(assert_fail),
 			_assert_pass(assert_pass),
 			_assert_color_fail(assert_color_fail),
@@ -56,7 +65,7 @@ class UnitTest {
 		};
 
 		template <typename T>
-		void assertEqual(const T actual, const T expected) const {
+		void assertEqual(const T& actual, const T& expected) const {
 			assertTrue(actual == expected);
 		};
 
@@ -77,15 +86,12 @@ class UnitTest {
 };
 
 typedef void (*testlist[])(UnitTest);
-typedef std::vector<void(*)(UnitTest)> asserts;
 template <typename T, std::size_t N>
-T* end(T(&arr)[N])
-{
+T* end(T(&arr)[N]) {
     return arr + N;
 }
 template <typename T, std::size_t N>
-T* begin(T(&arr)[N])
-{
+T* begin(T(&arr)[N]) {
     return arr;
 }
 
@@ -99,6 +105,6 @@ void testSuite(std::string name, T(&suit)[N], UnitTest unit = UnitTest()) {
 		suit[i](unit);
 		std::cout << RESET_COLOR;
 	};
-};
+}
 
 #endif

@@ -1,5 +1,5 @@
 #include <cstring>
-#include "UnitTest.hpp"
+#include "../UnitTest.hpp"
 #include <vector>
 #include <iterator>
 #include <bits/stdc++.h>
@@ -21,61 +21,41 @@ void testCopyConstructor(UnitTest unit) {
 	delete[] tmp;
 }
 
-void TestCompoundAssignmentOperations(UnitTest unit) {
+void testAssignmentOperations(UnitTest unit) {
 
 	int *p = new int[5];
 	int *tmp = p;
 	for (int i = 0; i < 5; i++) { p[i] = i<<1; }
-
 	std::vector<int>::iterator it(p);
 
-	unit.assertEqual(*(p + 3), *(it + 3));
+	unit.assertEqual(*(p + 3), *(it + 3), "Expeted: Equal; *(p + 3) == *(it + 3)");
+
 	bool equal = true;
 	for (size_t i = 0; i < 5; i++) {
-		if (*it++ != *p++) {
-			equal = false;
-		}
+		if (*it++ != *p++) { equal = false;}
 	}
-	unit.assertTrue(equal);
+	unit.assertTrue(equal, "Expeted: True; *p++ == *it++");
 
-	unit.assertEqual(*(p - 3), *(it - 3));
+	unit.assertEqual(*(p - 3), *(it - 3), "Expeted: Equal; *(p - 3) == *(it - 3)");
 
 	for (size_t i = 0; i < 5; i++) {
 		if (*--it != *--p) {
 			equal = false;
 		}
 	}
-
-	unit.assertTrue(equal);
-	for (size_t i = 0; i < 1; i++) {
-		if (it[i] != p[i]) {
-			equal = false;
-		}
-	}
-	unit.assertTrue(equal, "nem lembro");
-
-	p += 4;
-	it += 4;
-	unit.assertEqual(*p, *it);
-
-	p -= 2;
-	it -= 2;
-	unit.assertEqual(*p, *it);
+	unit.assertTrue(equal, "Expeted: True; *p-- == *it--");
 
 	delete[] tmp;
 }
 
+/*
+** Simple Functions Using asserts methods 
+*/
 
 int main( void ) {
-
-	testlist suit = {testCopyConstructor, TestCompoundAssignmentOperations};
-
-	UnitTest one(" pera ", "basnan");
-
-	testSuite("normal_and_reverse_iterators", suit, one);
+	std::cout << "testCopyConstructor" << std::endl;
+	testCopyConstructor(UnitTest());
+	std::cout << "testAssignmentOperations" << std::endl;
+	testAssignmentOperations(UnitTest());
 	return (0);
 }
-
-	// testlist vecsize = {testVectorSize};
-
-	// testSuite("vector_size", vecsize, 1);
